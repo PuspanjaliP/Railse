@@ -1,0 +1,148 @@
+1.This is a curl request
+
+
+curl --location 'localhost:8081/api/quick-enquiry-bypincode' \
+--header 'Content-Type: application/json' \
+--data '{
+  "customer_id": "1",
+  "originPincode": "561034",
+  "destinationPincode": "556620"
+
+}'
+----------------------------------------------------------------------------------------
+
+2.This is Request(RequestBody)
+public class QuickEnquiryRequest {
+	
+	private String customer_id;
+    private String originPincode;
+    private String destinationPincode;
+	public String getCustomer_id() {
+		return customer_id;
+	}
+	public void setCustomer_id(String customer_id) {
+		this.customer_id = customer_id;
+	}
+	public String getOriginPincode() {
+		return originPincode;
+	}
+	public void setOriginPincode(String originPincode) {
+		this.originPincode = originPincode;
+	}
+	public String getDestinationPincode() {
+		return destinationPincode;
+	}
+	public void setDestinationPincode(String destinationPincode) {
+		this.destinationPincode = destinationPincode;
+	}
+	public QuickEnquiryRequest(String customer_id, String originPincode, String destinationPincode) {
+		super();
+		this.customer_id = customer_id;
+		this.originPincode = originPincode;
+		this.destinationPincode = destinationPincode;
+	}
+	public QuickEnquiryRequest() {
+		super();
+	}
+	@Override
+	public String toString() {
+		return "QuickEnquiryRequest [customer_id=" + customer_id + ", originPincode=" + originPincode
+				+ ", destinationPincode=" + destinationPincode + "]";
+	}
+	
+	
+}
+----------------------------------------------------------------------------------------------------------
+
+3.This is controller 
+
+@RestController
+@RequestMapping("/api")
+public class BigshipController {
+       
+	@Autowired
+	private BigshipService bigshipService;
+	
+	
+	
+	@PostMapping("/quick-enquiry-bypincode")
+    public ResponseEntity<BigshipOpenCalculatorResponse> getQuickEnquiry(@RequestBody QuickEnquiryRequest request) {
+        BigshipOpenCalculatorResponse bigshipResponse = bigshipService.getQuickEnquiryByPincode(
+                request.getCustomer_id(),
+                request.getOriginPincode(),
+                request.getDestinationPincode()
+        );
+        return ResponseEntity.ok(bigshipResponse);
+    }
+	
+	
+}
+--------------------------------------------------------------------------------------------------------------
+4.This is Services
+
+ @Service
+public class BigshipService {
+
+	public BigshipOpenCalculatorResponse getQuickEnquiryByPincode(String customer_id, String originPincode,
+			String destinationPincode) {
+		System.out.println("customer_id=====" + customer_id);
+		System.out.println("originPincode=====" + originPincode);
+		System.out.println("destinationPincode=====" + destinationPincode);
+
+		BigshipOpenCalculatorResponse response = new BigshipOpenCalculatorResponse();
+		response.setStatus("success");
+		response.setMessage("Enquiry fetched successfully.");
+		Map<String, String> data = new HashMap<>();
+		data.put("customer_id", customer_id);
+		data.put("originPincode", originPincode);
+		data.put("destinationPincode", destinationPincode);
+		
+		response.setData(data);
+		return response;
+	}
+
+}
+
+---------------------------------------------------------------------------------------------------------
+5.This is Response(ResponseBody)
+
+public class BigshipOpenCalculatorResponse {
+     
+	private String status;
+    private String message;
+    private Object data;
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public Object getData() {
+		return data;
+	}
+	public void setData(Object data) {
+		this.data = data;
+	}
+	public BigshipOpenCalculatorResponse(String status, String message, Object data) {
+		super();
+		this.status = status;
+		this.message = message;
+		this.data = data;
+	}
+	public BigshipOpenCalculatorResponse() {
+		super();
+	}
+	@Override
+	public String toString() {
+		return "BigshipOpenCalculatorResponse [status=" + status + ", message=" + message + ", data=" + data + "]";
+	} 
+	
+	
+}
+
